@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Tutorial</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cousine|Nanum+Gothic+Coding&display=swap" rel="stylesheet">
+
+
+</head>
+<body>
+
+<nav id="navbar" class="sidenav">
+    <header>Django: Inception to Deploy</header>
+    <a href="#basic_assumptions" class="nav-link"> Basic Assumptions</a>
+    <a href="#install_dependencies" class="nav-link">Install Dependencies</a>
+    <a href="#getting_started" class="nav-link">Getting Started</a>
+    <a href="#credits_and_links" class="nav-link">Credits & Links</a>
+
+</nav>
+
+<main id="main-doc">
+    <section class="main-section" id="basic_assumptions">
+        <header class="heading"> Basic Assumptions</header>
+        <h3>Working with django and python in this tutorial makes some assumptions about pre-requisite comfort with the
+            development of websites in general:
+        </h3>
+        <ul>
+            <li>You know how to connect to files root directories and make new files within that structure</li>
+            <li>You have a working knowledge of terminal commands</li>
+            <li>You have a grasp of python syntax and some experience using the language</li>
+            <li>You have some experience with backend views</li>
+            <li>You are comfortable with basic CSS and HTML</li>
+            <li>You can troubleshoot and debug if issues come up as you work through the tutorial steps</li>
+        </ul>
+    </section>
+    <section class="main-section" id="install_dependencies">
+        <header class="heading">Install Dependencies</header>
+        <p>For django applications, you will need to install python and a tool that creates virtual environments called
+            pipenv. Check your system to see which version of python you have available. You can also check for
+            pipenv by using the following terminal commands: </p>
+        <code> $ python3 --version </code>
+        <br>
+        <code> $ pipenv --version </code>
+
+            <p>I recommend Python 3.7 or higher for best performance. If you need to install either program use
+                Homebrew to install them globally with these commands: </p>
+        <code> $ brew install python </code>
+        <br>
+        <code> $ brew install pipenv </code>
+        <p> Now you need to create a directory for your project. My application is a simple 'todo' list that I am
+            calling 'honeyDo-django'. Once you make this directory, you will need to cd into it for the next round
+            of installations. </p>
+        <code> $ mkdir honeyDo-django </code>
+        <p> OR <br> You can create a corresponding GitHub repo, initialize it with a README.md, and clone
+            into it for easy git connection to make the root directory. </p>
+        <code> $ git clone &ltREPO URL> </code>
+        <br>
+        <code> $ cd honeyDo-django/ </code>
+        <p> Now you are going to use pipenv to install locally inside your project. It is important NOT to install
+            these dependencies globally! Also, unlike npm, you will need to type out 'install' as 'i' doesn't work.
+            The first installation will be django itself. The second is a library that will connect django to
+            postgreSQL which will be hosting the database information. </p>
+        <code> $ pipenv install django </code>
+        <br>
+        <code> $ pipenv install psycopg2-binary </code>
+
+    </section>
+
+    <section class="main-section" id="getting_started">
+        <header class="heading">Getting Started</header>
+        <p>Now when you open the project in a text editor, you will see two new files have been added: Pipfile and
+            Pipfile.lock. These function as a holding place for all dependencies and works similarly to node_modules,
+            but do not require gitignore. The next step is to start the project itself. Naming convention can make
+            this a little confusing, so be sure to know which directory is the root of the project and which one is
+            the application itself. </p>
+        <code> $ pipenv run django-admin startproject honeyDo_django . </code>
+        <p> A few things to notice. First, you can substitute any name for your project after the startproject
+            command, but best practice is to use snake_case for python/django. Second, the . at the end of the
+            command is important so you don't create a sub-folder within the project. Finally, when you return to
+            your text editor, you will see several new files have been created automatically. Now it is time to enter
+            the virtual environment inside the project. Use this command to enter: </p>
+            <code> $ pipenv shell </code>
+            <p> You should notice a change in your bash command. Depending on the individual set up, it may
+                explicitly say 'virtual env' or 'env' OR it may put your project name in front of the $. If this
+                command doesn't work, you can also try: </p>
+        <code> $ source .env/bin/activate </code>
+        <p> Once inside the virtual environment, you need to create the application files. This time you will not
+            need the . at the end.</p>
+        <code> $ django-admin startapp honeyDo_app </code>
+    </section>
+
+    <section class="main-section" id="credits_and_links">
+        <header class="heading">Credits & Links</header>
+        <p>Please visit the deployed application on Heroku
+            <a href="" >honeyDo-django</a> and feel free to submit comments or improvements via an issue in the
+            <a href="https://github.com/spianoDev/honeyDo-django"> honeyDo-django GitHub</a> Repo.
+        </p>
+    </section>
+
+</main>
+
+</body>
+</html>

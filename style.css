@@ -1,0 +1,77 @@
+code, pre {
+    font-family: monospace;
+    background-color: rgba(132, 255, 253, 0.25);
+    max-width: 600px;
+    font-size: 14px;
+}
+pre {
+    max-width: 550px;
+    white-space: pre-wrap;
+    line-height: 1.3;
+}
+.sidenav {
+    height: 100%;
+    width: 27%;
+    position: fixed;
+    background-color: black;
+    align-content: center;
+}
+.sidenav a {
+    color: whitesmoke;
+    text-decoration: none;
+    display: block;
+    border: 2px solid white;
+    height: 40px;
+    font-size: 20px;
+    text-align: left;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-family: 'Nanum Gothic Coding', monospace;
+}
+header {
+    color: red;
+    height: 75px;
+    border: 2px solid white;
+    font-size: 26px;
+    padding-top: 5px;
+    padding-left: 15px;
+    font-family: 'Nanum Gothic Coding', monospace;
+}
+section {
+    margin-left: 30%;
+}
+@media screen and (max-width: 900px) {
+    header {
+        font-size: 18px;
+    }
+    .sidenav a {
+        font-size: 16px;
+    }
+}
+.heading {
+    color: red;
+    font-size: 36px;
+    padding: 15px 0;
+    height: 40px;
+}
+p {
+    line-height: 1.3;
+    font-family: 'Cousine', monospace;
+    font-size: 14px;
+}
+a {
+    color: red;
+    text-decoration: none;
+}
+h3 {
+    font-size: 16px;
+    font-weight: bolder;
+    font-family: 'Nanum Gothic Coding', monospace;
+    line-height: 1.3;
+}
+li {
+    font-family: 'Cousine', monospace;
+    font-size: 12px;
+    margin: 2px;
+}
