@@ -17,7 +17,7 @@
     <a href="#getting_started" class="nav-link">Getting Started</a>
     <a href="#database_setup" class="nav-link">Database Setup</a>
     <a href="#models" class="nav-link">Models</a>
-
+    <a href="#using_django_admin" class="nav-link">Using Django Admin</a>
     <a href="#credits_and_links" class="nav-link">Credits & Links</a>
 
 </nav>
@@ -170,26 +170,58 @@ class Todo(models.Model):
     person = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return self.title
 
 class Item(models.Model):
+    name = models.CharField(default='', max_length=300)
     task = models.ForeignKey(Todo, on_delete=models.CASCADE, related_name='tasks')
 
     def __str__(self):
-        return self.task
+        return self.name
         </pre></code>
-        <p> In order to use this model, it must be migrated to the database. These two commands will not only
+        <p> In order to use this model, it must be migrated to the database. These two
+            commands will not only
             configure the database information, but also store a record of the work inside the migrations directory
             in your project. Visit <a href="https://docs.djangoproject.com/en/2.1/topics/migrations/">djangoproject
                 .com</a> for the full documentation on migrations. Green <span style="color:green;">OK</span> will
-            indicate
-            everything worked.
+            indicate everything worked. Now, you can have as many models and fields as you want, but I recommend
+            keeping it simple since this is a relational database and too many relationships will quickly get
+            challenging to manage! (You will need to quit the server before running the commands.)
         </p>
         <code> $ python3 manage.py makemigrations </code>
         <br>
         <code> $ python3 manage.py migrate </code>
     </section>
+    <section class="main-section" id="using_django_admin">
+        <header class="heading">Using Django Admin</header>
+        <p> One of the reasons I love django is that it comes with an admin authentication that will allow you to
+            access all the CRUD features without needing any other interface. In order to access this feature, you
+            need to create a superuser and password. Unlike the database user/password, keep this information safe
+            and private since it grants access to all the pieces of your app! To set it up, run this command in
+            the terminal and fill out the fields.</p>
+        <code> $ python3 manage.py createsuperuser </code>
+        <p> Now, open the <code>admin.py</code> file and add the following code:</p>
+        <code><pre>
+from django.contrib import admin
+from .models import Todo, Item
 
+# Register your models here.
+admin.site.register(Todo)
+admin.site.register(Item)
+        </pre></code>
+<p> Finally you can access your database! Navigate to <a href="http://localhost:8000/admin ">localhost</a> to login
+    and view your app. So far these models can make todo lists and tasks that can be assigned to the lists. However, you will also notice that the
+    tasks don't show up in the lists. Don't worry, that will come soon when you add the user views to the project.
+    </p>
+<img src="./images/django-admin-home.png" alt="successful login screen example"/>
+        <p>(I love how the datetime automatically adds a mini-calendar to the application! This will come in handy later as
+            well.)</p>
+        <img src="./images/django-admin-calendar.png" alt="sample todo with mini calendar"/>
+        <p> On a side note, you might want to seed your database before doing any of this. If you have data already
+            in place, you can visit
+            <a href="https://docs.djangoproject.com/en/2.1/howto/initial-data/">djangoproject.com</a> for the full
+            documentation on seed data formats. </p>
+    </section>
 
     <section class="main-section" id="credits_and_links">
         <header class="heading">Credits & Links</header>
