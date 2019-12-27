@@ -15,6 +15,7 @@
     <a href="#basic_assumptions" class="nav-link"> Basic Assumptions</a>
     <a href="#install_dependencies" class="nav-link">Install Dependencies</a>
     <a href="#getting_started" class="nav-link">Getting Started</a>
+    <a href="#database_setup" class="nav-link">Database Setup</a>
     <a href="#credits_and_links" class="nav-link">Credits & Links</a>
 
 </nav>
@@ -88,6 +89,65 @@
         <p> Once inside the virtual environment, you need to create the application files. This time you will not
             need the . at the end.</p>
         <code> $ django-admin startapp honeyDo_app </code>
+        <p> If django-admin doesn't work for some reason, you can replace it with <code>python3 manage.py</code> as
+            long as that file exists in the current directory.
+        </p>
+    </section>
+        <section class="main-section" id="database_setup">
+            <header class="heading">Database Setup</header>
+        <p> Now that all the django files are in place, it is time to switch gears and set up the database. For this
+        project, you will use PostgreSQL, which is a more robust relational database than the default SQLite. If you
+        need to install this locally, please follow <a href="https://www.postgresql.org/download/">this link</a> and
+        select the appropriate version for your home machine. Once the application is installed and running, return to
+            the terminal and open a new tab. You do not need to cd into the project to set up this database, but you
+        will need to make note of the values entered since they will need to be inputted into the settings of your
+            django project as well. First use this command to login to PostgreSQL:</p>
+            <code> $ psql -d postgres </code>
+            <p> You should enter into a new field within the terminal. The prompt may have '>' or 'postgres=#' to
+                show access to the application. Now, create a database using the following commands: (Please note the uppercase may not be
+                necessary on all operating systems.) PostgreSQL is case sensative and all database names MUST be
+                lowercase. Also note the syntax with 'password' and ; at the end of the commands. You should get
+                confirmation in the terminal after each command is executed. As always, you can change the values of
+                the project to match your application and desired user name and password.
+            </p>
+            <code> CREATE DATABASE honeydo</code><br><code> CREATE USER honeyuser WITH PASSWORD 'honey'; </code>
+            <br> <code> GRANT ALL PRIVILEGES ON DATABASE honeydo TO honeyuser </code> <br> <code> \q </code>
+            <p> Now that the database is created, return to your text editor. Inside the project directory you need
+                to find (around line 76) and enter the database information into the <code>settings.py</code> file as
+                follows:
+            </p>
+<code> <pre>
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+         'NAME': 'honeydo',
+         'USER': 'honeyuser',
+         'PASSWORD': 'honey',
+         'HOST': 'localhost',
+    }
+}
+</pre>
+</code>
+            <p> You will also need to include the name of the application at the bottom of the INSTALLED_APPS list
+                (around line 33). Please note this must match the name of the directory, NOT the database.</p>
+            <code> <pre>
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'honeyDo_app',
+]
+            </pre></code>
+            <p> Now, finally, you can run this terminal command and navigate to localhost:8000 to see a welcome
+                Django app page!</p>
+            <code> $ python3 manage.py runserver </code>
+            <img src="./images/django-confirm.png" alt="confirmation page with django rocket"/>
+            <p> To see a list of commands simply type <code>python3 manage.py</code> or visit <a
+                    href="https://docs.djangoproject.com/en/2.1/ref/django-admin/">djangoproject.com</a> for
+                full documentation information.</p>
     </section>
 
     <section class="main-section" id="credits_and_links">
