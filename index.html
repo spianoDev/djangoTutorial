@@ -16,6 +16,8 @@
     <a href="#install_dependencies" class="nav-link">Install Dependencies</a>
     <a href="#getting_started" class="nav-link">Getting Started</a>
     <a href="#database_setup" class="nav-link">Database Setup</a>
+    <a href="#models" class="nav-link">Models</a>
+
     <a href="#credits_and_links" class="nav-link">Credits & Links</a>
 
 </nav>
@@ -147,8 +149,47 @@ INSTALLED_APPS = [
             <img src="./images/django-confirm.png" alt="confirmation page with django rocket"/>
             <p> To see a list of commands simply type <code>python3 manage.py</code> or visit <a
                     href="https://docs.djangoproject.com/en/2.1/ref/django-admin/">djangoproject.com</a> for
-                full documentation information.</p>
+                full documentation on django-admin/manage.py.</p>
     </section>
+    <section class="main-section" id="models">
+        <header class="heading">Models</header>
+        <p> It's time to create the interface that will allow you to generate data for the database. Models are
+            built using python classes. This class will determine the information you want to be added to each
+            instance of the model. In this case, I want a model 'Todo' that will hold all the 'todo' items so that
+            model will need fields for a title, date, and person (who will be doing the list). Since I want to have
+            many items possible on my single 'Todo' list, I will also need a second model that will have ForeignKey
+            relationship to the 'Todo' list. Open the <code>models.py</code> file and add the following:</p>
+        <code><pre>
+from django.db import models
+from datetime import date
+
+# Create your models here.
+class Todo(models.Model):
+    title = models.CharField(max_length=180)
+    date = models.DateField(auto_now=False, auto_now_add=False, default=date.today)
+    person = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class Item(models.Model):
+    task = models.ForeignKey(Todo, on_delete=models.CASCADE, related_name='tasks')
+
+    def __str__(self):
+        return self.task
+        </pre></code>
+        <p> In order to use this model, it must be migrated to the database. These two commands will not only
+            configure the database information, but also store a record of the work inside the migrations directory
+            in your project. Visit <a href="https://docs.djangoproject.com/en/2.1/topics/migrations/">djangoproject
+                .com</a> for the full documentation on migrations. Green <span style="color:green;">OK</span> will
+            indicate
+            everything worked.
+        </p>
+        <code> $ python3 manage.py makemigrations </code>
+        <br>
+        <code> $ python3 manage.py migrate </code>
+    </section>
+
 
     <section class="main-section" id="credits_and_links">
         <header class="heading">Credits & Links</header>
