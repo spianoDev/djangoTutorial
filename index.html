@@ -18,9 +18,9 @@
     <a href="#database_setup" class="nav-link">Database Setup</a>
     <a href="#models" class="nav-link">Models</a>
     <a href="#using_django_admin" class="nav-link">Using Django Admin</a>
-    <a href="#todo_views_urls" class="nav-link">Todo Views & Urls</a>
-    <a href="#item_views_urls" class="nav-link">Item Views & Urls</a>
+    <a href="#reading_views_urls" class="nav-link">Reading Views & Urls</a>
     <a href="#adding_forms" class="nav-link">Adding Forms</a>
+    <a href="#update_delete" class="nav-link">Update and Delete</a>
     <a href="#connecting_stylesheet" class="nav-link">Connecting Stylesheet</a>
     <a href="#credits_and_links" class="nav-link">Credits & Links</a>
 
@@ -213,8 +213,9 @@ from .models import Todo, Item
 admin.site.register(Todo)
 admin.site.register(Item)
         </pre></code>
-<p> Finally you can access your database! Navigate to <a href="http://localhost:8000/admin ">localhost</a> to login
-    and view your app. So far these models can make todo lists and tasks that can be assigned to the lists. However, you will also notice that the
+<p> Finally you can access your database! You will need to run <code> $ python3 manage.py runserver </code> in the
+    terminal first whenever accessing localhost, but once that is running, navigate to <a href="http://localhost:8000/admin ">
+    localhost</a> to login and view your app. So far these models can make todo lists and tasks that can be assigned to the lists. However, you will also notice that the
     tasks don't show up in the lists. Don't worry, that will come soon when you add the user views to the project.
     </p>
 <img src="./images/django-admin-home.png" alt="successful login screen example"/>
@@ -224,18 +225,20 @@ admin.site.register(Item)
         <p> On a side note, you might want to seed your database before doing any of this. If you have data already
             in place, you can visit
             <a href="https://docs.djangoproject.com/en/2.1/howto/initial-data/">djangoproject.com</a> for the full
-            documentation on seed data formats. </p>
+            documentation on seed data formats. Definitely take a few minutes to add a couple of entries in both the
+            Items and the Todos so you have something to pull when building out the user interface.
+        </p>
     </section>
-    <section class="main-section" id="todo_views_urls">
-        <header class="heading">Todo Views & Urls</header>
-        <p> Great! We have a working app, but this isn't terribly practical for a user. Next you will need to
+    <section class="main-section" id="reading_views_urls">
+        <header class="heading">Reading Views & Urls</header>
+        <p> Great! You have a working app, but this isn't terribly practical for a user. Next you will need to
             navigate into the <code>views.py</code> file from the application directory. This is where the python code
             will create an interface through Django that is similar to HTML pages. Begin by adding the following to
             line 2 (under the django.shortcuts import) to access the models:
         </p>
         <code>from .models import Todo, Item</code>
         <p> Next, you need to create a python method that will render a list of all the Todo lists created in the admin
-        console. Notice the request is followed by an html page. This will be set up later.</p>
+        console. Notice the request is followed by an html page. This will be set up in a moment.</p>
         <code><pre>
 def todo_list(request):
     todos = Todo.objects.all()
@@ -250,12 +253,124 @@ def todo_detail(request, pk):
     todo = Todo.objects.get(id = pk)
     return render(request, 'todo_detail.html', {'todo': todo})
         </pre></code>
-    </section>
-    <section class="main-section" id="item_views_urls">
-        <header class="heading">Item Views & Urls</header>
+        <p> In order to access these views in the browser, django requires a path to the URL, much like a controller
+            in Express. Since these are paths connected to the app itself, you will need to create a new file inside
+            the application directory to hold them called <code>urls.py</code> and you will enter the following code:
+            (Do not use the urls.py file inside the project directory!)
+        </p>
+        <code><pre>
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.todo_list, name = 'todo_list'),
+    path('todo/&ltint:pk>', views.todo_detail, name = 'todo_detail'),
+]
+        </pre></code>
+        <p>Notice the syntax for the two paths created. The url path is first followed by the call to the python
+            method. The name refers to which html template will be rendered, which is the next step. In this case, the
+            'homepage' will be the list of all the Todo lists. To make that work, you first need a directory that
+            will hold all the html files called <code>templates</code> and inside that directory, another new file
+            labeled <code>base.html</code>. Make sure this file system remains inside the application directory where
+            the views and urls are also stored so your filing structure looks something like this:
+        </p>
+<img src="./images/file_structure.png" alt="sample folder set up"/>
+        <p> The two green files are the ones just created. Inside that <code>base.html</code> is where the HTML
+            boilerplate will go. I set up mine to look like this.</p>
+<code><pre>
+&lt!DOCTYPE html>
+&lthtml lang="en">
+&lthead>
+    &ltmeta charset="UTF-8">
+    &lttitle>HoneyDo-Django&lt/title>
+    &lt/head>
+&ltbody>
+&ltnav >
+    &ltul >
+        &ltli >&lta href="/">Home&lt/a>&lt/li>
+    &lt/ul>
+&lt/nav>
+&ltdiv >
+    {% block content %}
+    {% endblock %}
+&lt/div>
+&lt/body>
+&lt/html>
+</pre></code>
+ <p> The stuff inside the curly braces will be how Django connects to the browser. It is very similar to Handlebars
+     (HBS) in Express. Now you need another template for each of the two views, so make these two files inside the
+     templates directory. I find it easier to create these files without a boilerplate since the pages will be
+     loading the content inside the div and copying the base html automatically.</p>
+        <code>todo_list.html</code>
+        <br>
+        <code>todo_detail.html</code>
+        <p>Inside the <code>todo_list.html</code> file, add the following code: </p>
+        <code><pre>
+{% extends 'base.html' %}
+
+{% block content %}
+&lth2 >Todo List&lt/h2>
+&ltdiv>
+    &ltul>
+        {% for todo in todos %}
+
+        &ltli >
+            &lta href="{% url 'todo_detail' pk=todo.pk %}">
+                {{ todo }}&lt/a>
+        &lt/li>
+        {% endfor %}
+    &lt/ul>
+&lt/div>
+{% endblock %}
+        </pre></code>
+        <p>Let's break down what just happened. The first line extends the boilerplate from the base.html file so
+            all html tags can be used. After that, the content inside the block will be inserted into the body div
+            from the base.html file. This content includes an h2 title followed by an unordered list of all the Todos
+            from the data entered earlier in the admin console. To list them, Django needs a 'for' loop. Notice the list items holds a reference to the todo_detail. This link gives the user access to
+            each individual Todo list according to the primary key number it has been assigned by Django.</p>
+        <p> Now you need something similar in the <code>todo_detail.html</code> file.
+        </p>
+        <code><pre>
+{% extends 'base.html' %}
+
+{% block content %}
+&lth2 >{{todo.title}}&lt/h2>
+&ltdiv>
+    &lth4>List created on: {{todo.date}}&lt/h4>
+    &lth4>{{todo.person}} will complete these tasks today!&lt/h4>
+&lt/div>
+{% endblock %}
+        </pre></code>
+            <p> Using dot notation inside the double {{}} you can access all of the fields from the Todo model. I
+                created additional text for clarity, but feel free to add anything you wish.
+        </p>
+        <p>The final step before revisiting the localhost is to add all these application paths to the <code>urls .py</code>
+            file inside the project directory by importing 'include' and adding the app urls. If you changed the name of your application, make sure the
+            file name matches the include path.
+        </p>
+        <code><pre>
+from django.contrib import admin
+from django.urls import path
+from django.conf.urls import include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('honeyDo_app.urls')),
+]
+        </pre></code>
+<p> Once again start up the server with <code> $ python3 manage.py runserver </code>, hope there aren't any
+    errors, and navigate to <a href="http://localhost:8000 ">localhost</a> to see your work. The home page should
+    look something like this:
+</p>
+        <img src="./images/home_screen.png" alt="sample homescreen"/>
+        <p>The single Todo list should look like this:</p>
+        <img src="images/single_todo.png" alt="sample todo list"/>
     </section>
     <section class="main-section" id="adding_forms">
         <header class="heading">Adding Forms</header>
+    </section>
+    <section class="main-section" id="update_delete">
+        <header class="heading">Update and Delete</header>
     </section>
     <section class="main-section" id="connecting_stylesheet">
         <header class="heading">Connecting Stylesheet</header>
