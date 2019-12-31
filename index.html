@@ -18,6 +18,10 @@
     <a href="#database_setup" class="nav-link">Database Setup</a>
     <a href="#models" class="nav-link">Models</a>
     <a href="#using_django_admin" class="nav-link">Using Django Admin</a>
+    <a href="#todo_views_urls" class="nav-link">Todo Views & Urls</a>
+    <a href="#item_views_urls" class="nav-link">Item Views & Urls</a>
+    <a href="#adding_forms" class="nav-link">Adding Forms</a>
+    <a href="#connecting_stylesheet" class="nav-link">Connecting Stylesheet</a>
     <a href="#credits_and_links" class="nav-link">Credits & Links</a>
 
 </nav>
@@ -222,7 +226,40 @@ admin.site.register(Item)
             <a href="https://docs.djangoproject.com/en/2.1/howto/initial-data/">djangoproject.com</a> for the full
             documentation on seed data formats. </p>
     </section>
-
+    <section class="main-section" id="todo_views_urls">
+        <header class="heading">Todo Views & Urls</header>
+        <p> Great! We have a working app, but this isn't terribly practical for a user. Next you will need to
+            navigate into the <code>views.py</code> file from the application directory. This is where the python code
+            will create an interface through Django that is similar to HTML pages. Begin by adding the following to
+            line 2 (under the django.shortcuts import) to access the models:
+        </p>
+        <code>from .models import Todo, Item</code>
+        <p> Next, you need to create a python method that will render a list of all the Todo lists created in the admin
+        console. Notice the request is followed by an html page. This will be set up later.</p>
+        <code><pre>
+def todo_list(request):
+    todos = Todo.objects.all()
+    return render(request, 'todo_list.html', {'todos': todos})
+        </pre></code>
+        <p> Users of this program will want to see one todo list at a time. Note the conversion of id to pk. Id is automatically assigned to JSON data,
+            but pk (primary key) is what is used by the database and django which will be important for building out
+            the html pages.
+        </p>
+        <code><pre>
+def todo_detail(request, pk):
+    todo = Todo.objects.get(id = pk)
+    return render(request, 'todo_detail.html', {'todo': todo})
+        </pre></code>
+    </section>
+    <section class="main-section" id="item_views_urls">
+        <header class="heading">Item Views & Urls</header>
+    </section>
+    <section class="main-section" id="adding_forms">
+        <header class="heading">Adding Forms</header>
+    </section>
+    <section class="main-section" id="connecting_stylesheet">
+        <header class="heading">Connecting Stylesheet</header>
+    </section>
     <section class="main-section" id="credits_and_links">
         <header class="heading">Credits & Links</header>
         <p>Please visit the deployed application on Heroku
