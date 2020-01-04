@@ -21,7 +21,7 @@
     <a href="#reading_views_urls" class="nav-link">Reading Views & Urls</a>
     <a href="#adding_forms" class="nav-link">Adding Forms</a>
     <a href="#update_delete" class="nav-link">Update and Delete</a>
-    <a href="#connecting_stylesheet" class="nav-link">Connecting Stylesheet</a>
+    <a href="#connecting_stylesheet" class="nav-link">Connecting a Stylesheet</a>
     <a href="#credits_and_links" class="nav-link">Credits & Links</a>
 
 </nav>
@@ -131,9 +131,7 @@ DATABASES = {
          'PASSWORD': 'honey',
          'HOST': 'localhost',
     }
-}
-</pre>
-</code>
+}</pre></code>
             <p> You will also need to include the name of the application at the bottom of the INSTALLED_APPS list
                 (around line 33). Please note this must match the name of the directory, NOT the database.</p>
             <code> <pre>
@@ -145,8 +143,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'honeyDo_app',
-]
-            </pre></code>
+] </pre></code>
             <p> Now, finally, you can run this terminal command and navigate to localhost:8000 to see a welcome
                 Django app page!</p>
             <code> $ python3 manage.py runserver </code>
@@ -181,8 +178,7 @@ class Item(models.Model):
     task = models.ForeignKey(Todo, on_delete=models.CASCADE, related_name='tasks')
 
     def __str__(self):
-        return self.name
-        </pre></code>
+        return self.name</pre></code>
         <p> In order to use this model, it must be migrated to the database. These two
             commands will not only
             configure the database information, but also store a record of the work inside the migrations directory
@@ -211,8 +207,7 @@ from .models import Todo, Item
 
 # Register your models here.
 admin.site.register(Todo)
-admin.site.register(Item)
-        </pre></code>
+admin.site.register(Item)</pre></code>
 <p> Finally you can access your database! You will need to run <code> $ python3 manage.py runserver </code> in the
     terminal first whenever accessing localhost, but once that is running, navigate to <a href="http://localhost:8000/admin ">
     localhost</a> to login and view your app. So far these models can make todo lists and tasks that can be assigned to the lists. However, you will also notice that the
@@ -242,8 +237,7 @@ admin.site.register(Item)
         <code><pre>
 def todo_list(request):
     todos = Todo.objects.all()
-    return render(request, 'todo_list.html', {'todos': todos})
-        </pre></code>
+    return render(request, 'todo_list.html', {'todos': todos})</pre></code>
         <p> Users of this program will want to see one todo list at a time. Note the conversion of id to pk. Id is automatically assigned to JSON data,
             but pk (primary key) is what is used by the database and django which will be important for building out
             the html pages.
@@ -265,8 +259,7 @@ from . import views
 urlpatterns = [
     path('', views.todo_list, name = 'todo_list'),
     path('todo/&ltint:pk>', views.todo_detail, name = 'todo_detail'),
-]
-        </pre></code>
+]</pre></code>
         <p>Notice the syntax for the two paths created. The url path is first followed by the call to the python
             method. The name refers to which html template will be rendered, which is the next step. In this case, the
             'homepage' will be the list of all the Todo lists. To make that work, you first need a directory that
@@ -321,8 +314,7 @@ urlpatterns = [
         {% endfor %}
     &lt/ul>
 &lt/div>
-{% endblock %}
-        </pre></code>
+{% endblock %}</pre></code>
         <p>Let's break down what just happened. The first line extends the boilerplate from the base.html file so
             all html tags can be used. After that, the content inside the block will be inserted into the body div
             from the base.html file. This content includes an h2 title followed by an unordered list of all the Todos
@@ -339,8 +331,7 @@ urlpatterns = [
     &lth4>List created on: {{todo.date}}&lt/h4>
     &lth4>{{todo.person}} will complete these tasks today!&lt/h4>
 &lt/div>
-{% endblock %}
-        </pre></code>
+{% endblock %}</pre></code>
             <p> Using dot notation inside the double {{}} you can access all of the fields from the Todo model. I
                 created additional text for clarity, but feel free to add anything you wish.
         </p>
@@ -356,24 +347,77 @@ from django.conf.urls import include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('honeyDo_app.urls')),
-]
-        </pre></code>
+]</pre></code>
 <p> Once again start up the server with <code> $ python3 manage.py runserver </code>, hope there aren't any
     errors, and navigate to <a href="http://localhost:8000 ">localhost</a> to see your work. The home page should
     look something like this:
 </p>
         <img src="./images/home_screen.png" alt="sample homescreen"/>
-        <p>The single Todo list should look like this:</p>
+        <p>The single Todo list should look similar to this:</p>
         <img src="images/single_todo.png" alt="sample todo list"/>
+        <p> Notice that the items attached to the list still aren't visible. Let's fix that. Go back to the
+            <code>views.py</code> file. Right now there are only methods for viewing the Todo model so you need to
+            repeat the process for the Item model in order to access the tasks. First make the list and detail views
+            by adding this code under the existing lines: </p>
+        <code><pre>
+def item_list(request):
+    items = Item.objects.all()
+    return render(request, 'item_list.html', {'items': items})
+
+def item_detail(request, pk):
+    item = Item.objects.get(id = pk)
+    return render(request, 'item_detail.html', {'item': item})</pre></code>
+        <p>Next you need to make matching application paths in the <code>urls.py</code> file inside the application
+            directory. Enter the next two paths under the 'todo/&ltint:pk>' entry. Make sure to have commas after
+            each url!</p>
+        <code><pre>
+path('items/', views.item_list, name = 'item_list'),
+path('item/&ltint:pk>', views.item_detail, name= 'item_detail'),</pre></code>
+        <p>Now create two new html files in the templates directory with the corresponding item names. Inside the <code>item_list.html</code> file, add the following:</p>
+    <code><pre>
+{% extends 'base.html' %}
+
+{% block content %}
+&lth2 >Item List&lt/h2>
+&ltdiv>
+    &ltul>
+        {% for item in items %}
+
+        &ltli >
+            &lta href="{% url 'item_detail' pk=item.pk %}">
+                {{ item }}&lt/a>
+        &lt/li>
+        {% endfor %}
+    &lt/ul>
+&lt/div>
+{% endblock %}</pre></code>
+        <p>This created a simple list with links to each item in the same way you made the Todo list. Inside the
+            <code>item_detail.html</code> file, add something like what is below. Feel free to be creative when
+            adding information to make it clear to the user what is being accessed on each page.</p>
+        <code><pre>
+{% extends 'base.html' %}
+
+{% block content %}
+&lth2>{{item.name}}&lt/h2>
+
+{% endblock %}</pre></code>
+        <p> Having a link to each item only to display the name of the item isn't terribly useful, for this
+            application, but when there are more fields tied to the foreign key this step is essential. Have a look
+            at another Django application, <a href="https://lessonkeeper.herokuapp.com/">lessonKeeper</a>, I created for a more complicated example of this .</p>
     </section>
     <section class="main-section" id="adding_forms">
         <header class="heading">Adding Forms</header>
+        <p>Now that the user can read all the data, you need to add a form so users can create new lists.</p>
+        <p>In some cases it may be helpful to convert the data into json pieces to make it easier for front end
+            technologies to 'talk' to the backend parts. A serializer also allows data to be validated and works with
+            the form data you just entered to do that. None of this is necessary for this application, but visit
+            <a href="https://www.django-rest-framework.org/api-guide/serializers/">Django REST Framework </a> to see the documentation.</p>
     </section>
     <section class="main-section" id="update_delete">
         <header class="heading">Update and Delete</header>
     </section>
     <section class="main-section" id="connecting_stylesheet">
-        <header class="heading">Connecting Stylesheet</header>
+        <header class="heading">Connecting a Stylesheet</header>
     </section>
     <section class="main-section" id="credits_and_links">
         <header class="heading">Credits & Links</header>
