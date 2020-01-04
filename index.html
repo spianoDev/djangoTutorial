@@ -116,8 +116,8 @@
                 confirmation in the terminal after each command is executed. As always, you can change the values of
                 the project to match your application and desired user name and password.
             </p>
-            <code> CREATE DATABASE honeydo</code><br><code> CREATE USER honeyuser WITH PASSWORD 'honey'; </code>
-            <br> <code> GRANT ALL PRIVILEGES ON DATABASE honeydo TO honeyuser </code> <br> <code> \q </code>
+            <code> CREATE DATABASE honeydo;</code><br><code> CREATE USER honeyuser WITH PASSWORD 'honey'; </code>
+            <br> <code> GRANT ALL PRIVILEGES ON DATABASE honeydo TO honeyuser; </code> <br> <code> \q </code>
             <p> Now that the database is created, return to your text editor. Inside the project directory you need
                 to find (around line 76) and enter the database information into the <code>settings.py</code> file as
                 follows:
@@ -398,12 +398,23 @@ path('item/&ltint:pk>', views.item_detail, name= 'item_detail'),</pre></code>
 {% extends 'base.html' %}
 
 {% block content %}
-&lth2>{{item.name}}&lt/h2>
+&lth2>{{item.task}}&lt/h2>
 
 {% endblock %}</pre></code>
         <p> Having a link to each item only to display the name of the item isn't terribly useful, for this
             application, but when there are more fields tied to the foreign key this step is essential. Have a look
             at another Django application, <a href="https://lessonkeeper.herokuapp.com/">lessonKeeper</a>, I created for a more complicated example of this .</p>
+    <p> This still doesn't link the todo and items, but if you return to the <code>todo_detail.html</code> file and
+        enter this new loop after the second 'h4' tag. </p>
+        <code><pre>
+&ltul>
+        {% for item in todo.items.all %}
+        &ltli>{{ item.task }}
+        &ltbr/> &lt/li>
+        {% endfor %}
+&lt/ul></pre></code>
+        <p>Refresh the browser and the page will now display a bullet list of the tasks!  </p>
+        <img src="./images/todo_with_tasks.png" alt="sample list of tasks"/>
     </section>
     <section class="main-section" id="adding_forms">
         <header class="heading">Adding Forms</header>
