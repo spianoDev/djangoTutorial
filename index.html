@@ -18,7 +18,7 @@
     <a href="#database_setup" class="nav-link">Database Setup</a>
     <a href="#models" class="nav-link">Models</a>
     <a href="#using_django_admin" class="nav-link">Using Django Admin</a>
-    <a href="#reading_views_urls" class="nav-link">Reading Views & Urls</a>
+    <a href="#views_urls" class="nav-link">Views & Urls</a>
     <a href="#adding_forms" class="nav-link">Adding Forms</a>
     <a href="#update_delete" class="nav-link">Update and Delete</a>
     <a href="#connecting_stylesheet" class="nav-link">Connecting a Stylesheet</a>
@@ -174,11 +174,11 @@ class Todo(models.Model):
         return self.title
 
 class Item(models.Model):
-    name = models.CharField(default='', max_length=300)
-    task = models.ForeignKey(Todo, on_delete=models.CASCADE, related_name='tasks')
+    task = models.CharField(max_length=300)
+    todo = models.ForeignKey(Todo, on_delete=models.CASCADE, related_name='items')
 
     def __str__(self):
-        return self.name</pre></code>
+        return self.task</pre></code>
         <p> In order to use this model, it must be migrated to the database. These two
             commands will not only
             configure the database information, but also store a record of the work inside the migrations directory
@@ -224,7 +224,7 @@ admin.site.register(Item)</pre></code>
             Items and the Todos so you have something to pull when building out the user interface.
         </p>
     </section>
-    <section class="main-section" id="reading_views_urls">
+    <section class="main-section" id="views_urls">
         <header class="heading">Reading Views & Urls</header>
         <p> Great! You have a working app, but this isn't terribly practical for a user. Next you will need to
             navigate into the <code>views.py</code> file from the application directory. This is where the python code
@@ -401,11 +401,13 @@ path('item/&ltint:pk>', views.item_detail, name= 'item_detail'),</pre></code>
 &lth2>{{item.task}}&lt/h2>
 
 {% endblock %}</pre></code>
-        <p> Having a link to each item only to display the name of the item isn't terribly useful, for this
-            application, but when there are more fields tied to the foreign key this step is essential. Have a look
+        <p> In order to see what you just did, you have to manually add '/items' after navigating to your <a
+                href="http://localhost:8000/">localhost</a>. Having a link to each item only to display the name of
+            the task isn't terribly useful, for this application, but when there are more fields tied to the foreign key this step is essential. Have a look
             at another Django application, <a href="https://lessonkeeper.herokuapp.com/">lessonKeeper</a>, I created for a more complicated example of this .</p>
-    <p> This still doesn't link the todo and items, but if you return to the <code>todo_detail.html</code> file and
-        enter this new loop after the second 'h4' tag. </p>
+    <p> All this work still doesn't link the todo and items, but the framework is there so you can now access the
+        Item model. Return to the <code>todo_detail.html</code> file and enter this new loop after the second 'h4'
+        tag: </p>
         <code><pre>
 &ltul>
         {% for item in todo.items.all %}
@@ -418,7 +420,72 @@ path('item/&ltint:pk>', views.item_detail, name= 'item_detail'),</pre></code>
     </section>
     <section class="main-section" id="adding_forms">
         <header class="heading">Adding Forms</header>
-        <p>Now that the user can read all the data, you need to add a form so users can create new lists.</p>
+        <p>Now that the user can read all the data, you need to add a form so users can create new todos from the
+            browser. Make a new <code>forms.py</code> file in the application directory. At the top of the file you
+            need to import forms and the two models using this code:</p>
+        <code>from django import forms</code><br><code>from .models import Todo, Item</code>
+        <p>Now you will make the form itself. The syntax is very similar to the model and you want to be sure all
+            the fields are present or you won't be able to add that piece of the data to the new todo. Also not the
+            dangling , inside the fields data. </p>
+        <code><pre>
+class TodoForm(forms.ModelForm):
+
+    class Meta:
+        model = Todo
+        fields = ('title', 'date', 'person',)
+
+class ItemForm(forms.ModelForm):
+
+    class Meta:
+        model = Item
+        fields = ('task',)</pre></code>
+        <p>Next you need to create an html page for each form. Let's start with the todo form. In the templates
+            directory, create a <code>todo_form.html</code> file. Inside that file add this code:</p>
+        <code><pre>
+{% extends 'base.html' %}
+
+{% block content %}
+&lth1>Honey Todo&lt/h1>
+&ltform method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    &ltbutton type="submit">Save&lt/button>
+&lt/form>
+{% endblock %}</pre></code>
+        <p>Let's break down what just happened. The python code we added in <code>forms.py</code> will automatically
+            generate this form for us! All you need to have is the type of method used: POST, and Django does the
+            rest. This form is created as paragraphs, but if you would like more flexibility, there is much more
+            information on <a href="https://docs.djangoproject.com/en/3.0/ref/forms/fields/">djangoproject.com</a>
+            about how to change the data fields. My favorite piece about the django forms is the built in use of
+            'csrf_token' that lends some security to the form without any extra effort on your part. </p>
+        <p> Before you can see this new form in the browser, you need a bit more code. Return to the <code>views
+            .py</code> file in the application directory. On the top line you must add <code>, redirect</code> to the
+            django shortcuts. This will allow you to redirect to a different page after submitting the data from the
+            form. Also, on line three, you must import the forms by adding <code>from .forms import TodoForm,
+                ItemForm</code> </p>
+        <p> I prefer to organize all my methods by model, so I will add the next piece between the todo_detail and item_list. However, the application will also work if you
+            continue to add code to the bottom of the page.
+        </p>
+        <code><pre>
+def todo_create(request):
+    if request.method == 'POST':
+        form = TodoForm(request.POST)
+        if form.is_valid():
+            todo = form.save()
+            return redirect('todo_detail', pk=todo.pk)
+    else:
+        form = TodoForm()
+    return render(request, 'todo_form.html', {'form': form})</pre></code>
+        <p>This method creates a form, checks for the validity of the form, saves the data, and redirects the user
+            back to the individual page for the new todo item. Now you need to add a path in the application
+            <code>urls.py</code> file so the browser will render the form. Simply add <code>path('todo/new',
+                views.todo_create, name = 'todo_create'),</code> on line 9.</p>
+        <p>That last piece should allow you to return to the browser and view your <a
+                href="http://localhost:8000/todo/new">New Todo</a> form.</p>
+        <p>Typically, there is more data when building out two separate html pages of forms. Some of these steps can
+            definitely be consolidated, however, I felt it was important to give the full detail so this
+            tutorial could be applied to future, more complex projects. </p>
+
         <p>In some cases it may be helpful to convert the data into json pieces to make it easier for front end
             technologies to 'talk' to the backend parts. A serializer also allows data to be validated and works with
             the form data you just entered to do that. None of this is necessary for this application, but visit
