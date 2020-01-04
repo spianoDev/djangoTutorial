@@ -480,12 +480,18 @@ def todo_create(request):
             back to the individual page for the new todo item. Now you need to add a path in the application
             <code>urls.py</code> file so the browser will render the form. Simply add <code>path('todo/new',
                 views.todo_create, name = 'todo_create'),</code> on line 9.</p>
+        <img src="./images/todo_form.png" alt="todo form example"/>
         <p>That last piece should allow you to return to the browser and view your <a
-                href="http://localhost:8000/todo/new">New Todo</a> form.</p>
+                href="http://localhost:8000/todo/new">New Todo</a> form. Notice again the missing tasks from the
+            form above. To add them, repeat the process of adding the <code>item_form.html</code> file, making a create for the Item
+            model in <code>views.py</code>, and adding <code>path('item/new', views.item_create, name = 'item_create'),</code> to the <code>urls.py</code> file in the application
+        directory. Remember <a href="http://localhost:8000">localhost</a> will need to have '/item/new' added
+            manually to view this form. </p>
+        <img src="./images/item_form.png" alt="task form example"/>
         <p>Typically, there is more data when building out two separate html pages of forms. Some of these steps can
             definitely be consolidated, however, I felt it was important to give the full detail so this
-            tutorial could be applied to future, more complex projects. </p>
-
+            tutorial could be applied to future, more complex projects.
+        </p>
         <p>In some cases it may be helpful to convert the data into json pieces to make it easier for front end
             technologies to 'talk' to the backend parts. A serializer also allows data to be validated and works with
             the form data you just entered to do that. None of this is necessary for this application, but visit
@@ -493,6 +499,9 @@ def todo_create(request):
     </section>
     <section class="main-section" id="update_delete">
         <header class="heading">Update and Delete</header>
+        <p>This format is terribly impractical for the user so we will add the link to tasks through the update
+            feature of the todo form. The tricky piece is that the tasks cannot function independently of a primary
+            todo list. </p>
     </section>
     <section class="main-section" id="connecting_stylesheet">
         <header class="heading">Connecting a Stylesheet</header>
