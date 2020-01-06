@@ -22,6 +22,7 @@
     <a href="#adding_forms" class="nav-link">Adding Forms</a>
     <a href="#update_delete" class="nav-link">Update and Delete</a>
     <a href="#connecting_stylesheet" class="nav-link">Connecting a Stylesheet</a>
+    <a href="#deploy" class="nav-link">Deploy!</a>
     <a href="#credits_and_links" class="nav-link">Credits & Links</a>
 
 </nav>
@@ -438,7 +439,7 @@ class ItemForm(forms.ModelForm):
 
     class Meta:
         model = Item
-        fields = ('task',)</pre></code>
+        fields = ('task', 'todo',)</pre></code>
         <p>Next you need to create an html page for each form. Let's start with the todo form. In the templates
             directory, create a <code>todo_form.html</code> file. Inside that file add this code:</p>
         <code><pre>
@@ -487,9 +488,10 @@ def todo_create(request):
             model in <code>views.py</code>, and adding <code>path('item/new', views.item_create, name = 'item_create'),</code> to the <code>urls.py</code> file in the application
         directory. Remember <a href="http://localhost:8000">localhost</a> will need to have '/item/new' added
             manually to view this form. </p>
-        <img src="./images/item_form.png" alt="task form example"/>
-        <p>Typically, there is more data when building out two separate html pages of forms. Some of these steps can
-            definitely be consolidated, however, I felt it was important to give the full detail so this
+        <img src="./images/task_form.png" alt="task form example"/>
+        <p>Notice the drop down menu that is automatically added to this form? That is the foreign key
+            relationship at work! Now typically, there is more data when building out
+            two separate html pages of forms, however, I felt it was important to give the full detail so this
             tutorial could be applied to future, more complex projects.
         </p>
         <p>In some cases it may be helpful to convert the data into json pieces to make it easier for front end
@@ -499,12 +501,53 @@ def todo_create(request):
     </section>
     <section class="main-section" id="update_delete">
         <header class="heading">Update and Delete</header>
-        <p>This format is terribly impractical for the user so we will add the link to tasks through the update
-            feature of the todo form. The tricky piece is that the tasks cannot function independently of a primary
-            todo list. </p>
+        <p>The current format for creating new forms is terribly impractical for the user so we will add the link to
+            tasks through the update feature of the todo form. The tricky piece is that the tasks cannot function independently of a primary
+            todo list, so the todo must be created first.
+        </p>
+        <p> To start this process, you need to add an update method to the <code>views.py</code> file. This is very
+        similar to the create method and will actually redirect to the same form as before.
+        </p>
+        <code><pre>
+def todo_update(request, pk):
+    todo = Todo.objects.get(pk=pk)
+    if request.method == "POST":
+        form = TodoForm(request.POST, instance=todo)
+        if form.is_valid():
+            todo = form.save()
+            return redirect('todo_detail', pk=todo.pk)
+    else:
+        form = TodoForm(instance=todo)
+    return render(request, 'todo_form.html', {'form': form})</pre></code>
+        <p>Now, the browser needs the update path in the application <code>urls.py</code> file. For this path, you
+            are going to enter a combination of the pk code and the word 'update' by entering
+            <code>path('todo/&ltint:pk>/update', views.todo_update, name = 'todo_update'),</code> under the list of
+            current paths. These additions should allow you to navigate to <a
+                    href="http://localhost:8000/todo/1/update">localhost</a> and view the update form. Notice the page looks identical to the 'new' todo page. The only difference is  this form has the
+            information already entered. To update, simply change the text and hit submit. Unfortunately, the tasks
+            are still missing. Return to the <code>views.py</code> file and enter the update item method:</p>
+        <code><pre>
+def item_update(request, pk):
+    item = Item.objects.get(pk=pk)
+    if request.method == "POST":
+        form = ItemForm(request.POST, instance=item)
+        if form.is_valid():
+            item = form.save()
+            return redirect('item_detail', pk=item.pk)
+    else:
+        form = ItemForm(instance=item)
+    return render(request, 'item_form.html', {'form': form})</pre></code>
+    <p>Then add the item update path to the application <code>urls.py</code> file, again creating the path at the
+        end of the list.</p>
+        <code>path('item/&ltint:pk>/update', views.item_update, name = 'item_update'),</code>
+        <p>Visit <a>localhost</a> to see this form at work. The final step is to combine the pieces so you can add
+            tasks directly to a todo list.</p>
     </section>
     <section class="main-section" id="connecting_stylesheet">
-        <header class="heading">Connecting a Stylesheet</header>
+    <header class="heading">Connecting a Stylesheet</header>
+    </section>
+    <section class="main-section" id="deploy">
+        <header class="heading">Deploy!</header>
     </section>
     <section class="main-section" id="credits_and_links">
         <header class="heading">Credits & Links</header>
