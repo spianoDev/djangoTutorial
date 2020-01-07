@@ -627,10 +627,34 @@ def item_delete(request, pk):
     {% csrf_token %}
     &ltinput type="submit" value="Remove HoneyDo '{{todo.title}}'">
 &lt/form></pre></code>
-
     </section>
     <section class="main-section" id="connecting_stylesheet">
     <header class="heading">Connecting a Stylesheet</header>
+        <p>So now that the application has full CRUD, time to add a bit of style! The most important part of this
+            section is connecting the stylesheet. After that, the sky is the limit as far as the end 'look' of your
+            application. The first step is to create another new directory called <code>static</code> in the application
+        directory. Inside this new file, create your <code>style.css</code> stylesheet. I will often change
+            something generic to be sure the file is connected, so inside this file I will add:</p>
+        <code><pre>
+h2 {
+    color: red;
+}</pre></code>
+        <p>Before you can see this change, you need to return to the <code>base.html</code> file. At the top of the
+            file, just below the doctype on line 2 add:</p>
+        <code>{% load static %}</code>
+        <p>Now you can link the stylesheet from the head of the boilerplate just like a 'regular' HTML file, but
+            with one small difference:</p>
+        <code>&ltlink rel="stylesheet" href="{% static 'style.css' %}"></code>
+        <p>Finally, at the very bottom of the <code>settings.py</code> file inside of the project directory, you
+            will see a place for static files. Add this to enable connection to the application: </p>
+        <code><pre>
+STATICFILES_DIRS = (
+  os.path.join(BASE_DIR, 'honeyDo_app/static'),
+)</pre></code>
+        <p>Now those 'Tasks for Today' should be in bright red and you know the stylesheet is linked. Feel free to
+            add classes and customize to your heart's content. I've included this <a href="">link</a> to my finished
+        stylesheet if you want to copy it!</p>
+        <img src="./images/red_task.png" alt="heading now in red"/>
     </section>
     <section class="main-section" id="deploy">
         <header class="heading">Deploy!</header>
@@ -638,8 +662,8 @@ def item_delete(request, pk):
     <section class="main-section" id="credits_and_links">
         <header class="heading">Credits & Links</header>
         <p>Please visit the deployed application on Heroku
-            <a href="" >honeyDo-django</a> and feel free to submit comments or improvements via an issue in the
-            <a href="https://github.com/spianoDev/honeyDo-django"> honeyDo-django GitHub</a> Repo.
+            <a href="" target="_blank" >honeyDo-django</a> and feel free to submit comments or improvements via an issue in the
+            <a href="https://github.com/spianoDev/honeyDo-django" target="_blank"> honeyDo-django GitHub</a> Repo.
         </p>
     </section>
 
