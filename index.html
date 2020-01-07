@@ -492,8 +492,10 @@ def todo_create(request):
         <p>Notice the drop down menu that is automatically added to this form? That is the foreign key
             relationship at work! Now typically, there is more data when building out
             two separate html pages of forms, however, I felt it was important to give the full detail so this
-            tutorial could be applied to future, more complex projects.
+            tutorial could be applied to future, more complex projects. The only other addition that will help the
+            user is to add this 'New Todo' to the navigation bar in the <code>base.html</code> file.
         </p>
+        <code>&ltli>&lta href="/todo/new">New HoneyDo&lt/a>&lt/li></code>
         <p>In some cases it may be helpful to convert the data into json pieces to make it easier for front end
             technologies to 'talk' to the backend parts. A serializer also allows data to be validated and works with
             the form data you just entered to do that. None of this is necessary for this application, but visit
@@ -591,9 +593,13 @@ def item_delete(request, pk):
     item.delete()
     return redirect('todo_detail', pk = parent_id)</pre></code>
         <p>In order to return to the todo detail page, you must first save the parent_id because once that child id
-            is deleted, nothing in the database that was attached to it will be accessible anymore.</p>
+            is deleted, nothing in the database that was attached to it will be accessible anymore. Now add the
+            paths to the bottom of the list in the application <code>urls.py</code> file.</p>
         <code>path('todo/&ltcode>/delete', views.todo_delete, name = 'todo_delete'),</code> <br/>
            <code> path('item/&ltint:pk>/delete', views.item_delete, name = 'item_delete'),</code>
+        <p>In formatting the browser, let's make the delete form for the tasks a little more 'fancy' by attaching it
+        to each item in the for loop we made earlier. Add the code below to the <code>todo_detail.html</code> page in
+            the templates directory.</p>
         <code><pre>
  &ltul>
         {% for item in todo.items.all %}
@@ -606,6 +612,22 @@ def item_delete(request, pk):
         {% endfor %}
     &lt/ul>
         </pre></code>
+        <p> Now when you navigate to a Todo list from your <a href="http://localhost:8000/todo/1">localhost</a>, notice how the
+            delete button includes the name of the task to avoid user confusion.</p>
+        <img src="./images/tasks_delete.png" alt="tasks with delete button included"/>
+        <p>The last piece is to enable an entire Todo to be deleted. Remember back in the <a href="#models">Models</a>
+            when you created that 'CASCADE' piece in the foreign key? That is what will delete not only the Todo
+            list, but any and all tasks associated with the Todo. If this was missing, pressing the delete button would
+            throw an error. Placement of these delete forms can be at your discretion, but I think it makes the most
+            sense for the user to delete the Todo from the <code>todo_detail.html</code> page just above the endblock
+            line of code.
+        </p>
+        <code><pre>
+&ltform action="{% url 'todo_delete' pk=todo.pk %}" method="POST">
+    {% csrf_token %}
+    &ltinput type="submit" value="Remove HoneyDo '{{todo.title}}'">
+&lt/form></pre></code>
+
     </section>
     <section class="main-section" id="connecting_stylesheet">
     <header class="heading">Connecting a Stylesheet</header>
