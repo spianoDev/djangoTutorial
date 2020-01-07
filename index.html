@@ -540,8 +540,72 @@ def item_update(request, pk):
     <p>Then add the item update path to the application <code>urls.py</code> file, again creating the path at the
         end of the list.</p>
         <code>path('item/&ltint:pk>/update', views.item_update, name = 'item_update'),</code>
-        <p>Visit <a>localhost</a> to see this form at work. The final step is to combine the pieces so you can add
-            tasks directly to a todo list.</p>
+        <p>Visit <a>localhost</a> to see this form at work. Again, this isn't super user friendly, so for the
+            purpose of this particular project, we are going to make a few small changes. Start with the
+            <code>views.py</code> file. We are going to change the redirect for the Item create and Item update to the
+            todo_detail.</p>
+        <code><pre>
+def item_create(request):
+    if request.method == 'POST':
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            item = form.save()
+            return redirect('todo_detail', pk = item.todo.pk)
+    else:
+        form = ItemForm()
+    return render(request, 'item_form.html', {'form': form})
+
+def item_update(request, pk):
+    item = Item.objects.get(pk=pk)
+    if request.method == "POST":
+        form = ItemForm(request.POST, instance=item)
+        if form.is_valid():
+            item = form.save()
+            return redirect('todo_detail', pk = item.todo.pk)
+    else:
+        form = ItemForm(instance=item)
+    return render(request, 'item_form.html', {'form': form})</pre></code>
+        <p>Next we need to return to the <code>todo_detail.html</code> file in the templates directory to add a link
+        to the item form. Below the closing div tag, add this line of code:</p>
+        <code>&lta href="{% url 'item_create' %}">add task&lt/a></code>
+        <p>Great! Now that we can add an item to the todo, we will want to be able to update the current list as
+            well. The easiest way is to make each list item a clickable link like this:
+        </p>
+        <code><pre>
+&ltul>
+        {% for item in todo.items.all %}
+        &ltli>&lta href="{% url 'item_update' pk=item.pk %}">{{ item.task }}&lt/a>
+        &ltbr/> &lt/li>
+        {% endfor %}
+&lt/ul></pre></code>
+        <p>The final piece of this section is adding the ability to delete an Item or the entire Todo list. Again
+            start with creating the methods to do this in the <code>views.py</code> file.</p>
+        <code><pre>
+def todo_delete(request, pk):
+    Todo.objects.get(id=pk).delete()
+    return redirect('todo_list')
+
+def item_delete(request, pk):
+    item = Item.objects.get(pk=pk)
+    parent_id = item.todo.pk
+    item.delete()
+    return redirect('todo_detail', pk = parent_id)</pre></code>
+        <p>In order to return to the todo detail page, you must first save the parent_id because once that child id
+            is deleted, nothing in the database that was attached to it will be accessible anymore.</p>
+        <code>path('todo/&ltcode>/delete', views.todo_delete, name = 'todo_delete'),</code> <br/>
+           <code> path('item/&ltint:pk>/delete', views.item_delete, name = 'item_delete'),</code>
+        <code><pre>
+ &ltul>
+        {% for item in todo.items.all %}
+        &ltli>&lta href="{% url 'item_update' pk=item.pk %}">{{ item.task }}&lt/a>
+            &ltform action="{% url 'item_delete' pk=item.pk %}" method="POST">
+                {% csrf_token %}
+                &ltinput type="submit" value="Remove {{item.task}}">
+            &lt/form>
+        &ltbr/> &lt/li>
+        {% endfor %}
+    &lt/ul>
+        </pre></code>
     </section>
     <section class="main-section" id="connecting_stylesheet">
     <header class="heading">Connecting a Stylesheet</header>
