@@ -40,6 +40,7 @@
             <li>You have some experience with backend views</li>
             <li>You are comfortable with basic CSS and HTML</li>
             <li>You can troubleshoot and debug if issues come up as you work through the tutorial steps</li>
+            <li>You are able to create and maintain an account on <a href="https://www.heroku.com" target="_blank">Heroku</a></li>
         </ul>
     </section>
     <section class="main-section" id="install_dependencies">
@@ -658,6 +659,81 @@ STATICFILES_DIRS = (
     </section>
     <section class="main-section" id="deploy">
         <header class="heading">Deploy!</header>
+        <p>Finally, the application is complete and looking good so it is time to publish it so others can see what
+            you've made. If you don't already have a <a href="https://www.heroku.com" target="_blank">Heroku
+                account</a>, set one up first. Also, since Heroku uses Git to deploy, make sure you have saved your
+            application in GitHub. Heroku requires some additional files and dependencies, so return to the terminal
+            and make sure you are in the root directory of the project before running the following code:
+        </p>
+        <code>$ pipenv install django-cors-headers</code><br/>
+        <code>$ pipenv install gunicorn</code><br/>
+        <code>$ pipenv install whitenoise</code><br/>
+        <code>$ pipenv install dj-database-url</code><br/>
+        <code>$ pipenv install django-heroku</code>
+        <code>$ pipenv install python-decouple</code>
+        <p>It's important to install all the dependencies first so you don't have to update the requirements file you
+            will be adding next. Create a <code>requirements.txt</code> file by running the following code from your virtual environment. </p>
+        <code>pip freeze > requirements.txt</code>
+        <p>When you open this file, there are a few extras created automatically, and should look like this:</p>
+        <code><pre>
+asgiref==3.2.3
+dj-database-url==0.5.0
+Django==3.0.2
+django-cors-headers==3.2.1
+django-heroku==0.3.1
+gunicorn==20.0.4
+psycopg2==2.8.4
+psycopg2-binary==2.8.4
+python-decouple==3.3
+pytz==2019.3
+sqlparse==0.3.0
+whitenoise==5.0.1</pre></code>
+        <p>Next create a <code>Procfile</code> in the root directory of your project. (This file should be at the
+            same level as your Pipfile and requirements.txt files.) Inside the Procfile enter:</p>
+        <code>web: gunicorn honeyDo_django.wsgi</code>
+        <p>Notice that the name you use is the project directory name and NOT the application name. Now add
+            whitenoise to the <code>wsgi.py</code> file in the project directory.</p>
+        <code><pre>
+import os
+
+from django.core.wsgi import get_wsgi_application
+from whitenoise.django import DjangoWhiteNoise
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'honeyDo_django.settings')
+
+application = get_wsgi_application()
+application = DjangoWhiteNoise(application)</pre></code>
+        <p> In the <code>settings.py</code> file, add at the very bottom of the file:</p>
+        <code>STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'</code>
+        <p>Ok, everything should be configured so return to the terminal and in the root directory of the project
+            create a Heroku application. (Make sure to add a lowercase name or Heroku will automatically assign
+            something random and you will be stuck with a weird http address!)</p>
+        <code>$ heroku create honeydo-app</code>
+        <p>Next connect a PostgreSQL database (and remember if you seeded it from the admin it will register as an
+            empty database on Heroku.)</p>
+        <code>heroku addons:create heroku-postgresql:hobby-dev</code>
+        <p>You will need to go back to the <code>settings.py</code> file and find the 'secret key' around line 23.
+            Enter the following code so this key can be protected after publication.</p>
+        <code><pre>
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}  </pre></code>
+        <p>Also be sure to add cors to the installed apps so everything will talk in production.</p>
+        <code>'corsheaders',</code>
+        <p>Now enter Heroku and view the application you just created by selecting it. Go to settings and select
+            'Reveal Config Vars' so you can add your secret key from the <code>settings.py</code> file under the
+            database. Be sure to erase the secret key from the settings before you deploy!</p>
+        <img/>
+        <p>I found that the static files have posed issues in the past so you may need to run this in the terminal
+            to get your Heorku application to deploy properly:</p>
+        <code>$ heroku config:set DISABLE_COLLECTSTATIC=1</code>
+<p> The last step is to push everything to Heroku which will officially deploy your application! (Make sure your
+    application is up to date in your regular GitHub first.)</p>
+        <code>$ git push heroku master</code>
     </section>
     <section class="main-section" id="credits_and_links">
         <header class="heading">Credits & Links</header>
