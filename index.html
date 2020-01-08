@@ -691,54 +691,47 @@ whitenoise==5.0.1</pre></code>
         <p>Next create a <code>Procfile</code> in the root directory of your project. (This file should be at the
             same level as your Pipfile and requirements.txt files.) Inside the Procfile enter:</p>
         <code>web: gunicorn honeyDo_django.wsgi</code>
-        <p>Notice that the name you use is the project directory name and NOT the application name. Now add
-            whitenoise to the <code>wsgi.py</code> file in the project directory.</p>
-        <code><pre>
-import os
-
-from django.core.wsgi import get_wsgi_application
-from whitenoise.django import DjangoWhiteNoise
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'honeyDo_django.settings')
-
-application = get_wsgi_application()
-application = DjangoWhiteNoise(application)</pre></code>
-        <p> In the <code>settings.py</code> file, add at the very bottom of the file:</p>
-        <code>STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'</code>
+        <p>Notice that the name you use is the project directory name and NOT the application name. </p>
+        <p>Back in the <code>settings.py</code> add the cors middleware above the common middleware (around line 53) and
+            be sure to add cors to the installed apps (around line 47) so everything will talk in production.</p>
+        <code>'corsheaders',</code><br/>
+        <code>'corsheaders.middleware.CorsMiddleware',</code>
+        <p>It is recommended to change the debugging setting to 'False' for production, but for some reason my
+            application would only display with this setting as 'True'. I have no explanation for this but tried it
+            several times to no avail, but since my deployment is working, I am not going to change it!</p>
+        <p>Staying in the <code>settings.py</code> file, find the 'secret key' around line 23.
+            Enter the following code so this key can be protected after publication.</p>
+        <code>SECRET_KEY = os.environ['SECRET_KEY']</code>
+        <p>Now enter Heroku and view the application you just created by selecting it. Go to settings and select
+            'Reveal Config Vars' so you can add your secret key from the <code>settings.py</code> file under the
+            database. Be sure to erase the secret key from the settings before you deploy!</p>
+        <img src="./images/secret_key.png" alt="display where to add the secret key to Heroku settings"/>
         <p>Ok, everything should be configured so return to the terminal and in the root directory of the project
             create a Heroku application. (Make sure to add a lowercase name or Heroku will automatically assign
             something random and you will be stuck with a weird http address!)</p>
         <code>$ heroku create honeydo-app</code>
         <p>Next connect a PostgreSQL database (and remember if you seeded it from the admin it will register as an
             empty database on Heroku.)</p>
-        <code>heroku addons:create heroku-postgresql:hobby-dev</code>
-        <p>You will need to go back to the <code>settings.py</code> file and find the 'secret key' around line 23.
-            Enter the following code so this key can be protected after publication.</p>
-        <code><pre>
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}  </pre></code>
-        <p>Also be sure to add cors to the installed apps so everything will talk in production.</p>
-        <code>'corsheaders',</code>
-        <p>Now enter Heroku and view the application you just created by selecting it. Go to settings and select
-            'Reveal Config Vars' so you can add your secret key from the <code>settings.py</code> file under the
-            database. Be sure to erase the secret key from the settings before you deploy!</p>
-        <img/>
+        <code>$ heroku addons:create heroku-postgresql:hobby-dev</code>
+
+
         <p>I found that the static files have posed issues in the past so you may need to run this in the terminal
-            to get your Heorku application to deploy properly:</p>
+            to get your Heroku application to deploy properly:</p>
         <code>$ heroku config:set DISABLE_COLLECTSTATIC=1</code>
 <p> The last step is to push everything to Heroku which will officially deploy your application! (Make sure your
     application is up to date in your regular GitHub first.)</p>
         <code>$ git push heroku master</code>
+        <p>You will need to migrate the models to Heroku just like you did with the localhost, so run this code from
+        the terminal after pushing to heroku master:</p>
+        <code>$ heroku run python manage.py migrate</code>
+        <p>Let's open the live version of the application. You can do this through your account on Heroku or by running
+            this command in the terminal:</p>
+        <code>$ heroku open</code>
     </section>
     <section class="main-section" id="credits_and_links">
         <header class="heading">Credits & Links</header>
         <p>Please visit the deployed application on Heroku
-            <a href="" target="_blank" >honeyDo-django</a> and feel free to submit comments or improvements via an issue in the
+            <a href="https://honeydo-app.herokuapp.com/" target="_blank" >honeyDo-django</a> and feel free to submit comments or improvements via an issue in the
             <a href="https://github.com/spianoDev/honeyDo-django" target="_blank"> honeyDo-django GitHub</a> Repo.
         </p>
     </section>
