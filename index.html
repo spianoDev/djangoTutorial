@@ -654,7 +654,8 @@ STATICFILES_DIRS = (
 )</pre></code>
         <p>Now those 'Tasks for Today' should be in bright red and you know the stylesheet is linked. Feel free to
             add classes and customize to your heart's content. I've included this <a href="">link</a> to my finished
-        stylesheet if you want to copy it!</p>
+        stylesheet if you want to copy it! (Link not working as I haven't styled my application yet, but I
+            anticipate it coming very soon...)</p>
         <img src="./images/red_task.png" alt="heading now in red"/>
     </section>
     <section class="main-section" id="deploy">
@@ -698,7 +699,7 @@ whitenoise==5.0.1</pre></code>
         <code>'corsheaders.middleware.CorsMiddleware',</code>
         <p>It is recommended to change the debugging setting to 'False' for production, but for some reason my
             application would only display with this setting as 'True'. I have no explanation for this but tried it
-            several times to no avail, but since my deployment is working, I am not going to change it!</p>
+            several times to no avail, however, since my deployment is working, I am not going to change mine!</p>
         <p>Staying in the <code>settings.py</code> file, find the 'secret key' around line 23.
             Enter the following code so this key can be protected after publication.</p>
         <code>SECRET_KEY = os.environ['SECRET_KEY']</code>
