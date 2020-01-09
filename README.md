@@ -1,5 +1,5 @@
 # djangoTutorial
-![django/python]()
+![django/python](./images/python_django%20.png)
 
 A tutorial from inception through deployment of a fully developed back end using django and python.
 
@@ -7,13 +7,13 @@ A tutorial from inception through deployment of a fully developed back end using
 
 ### Navigation is set to the side with the clickable links moving you down the page through the tutorial
 
-![Nav Example]() 
+![Nav Example](./images/django_nav.png) 
 
 ### Code snippets are highlighted in blue for easy copy/paste
 
 code example
 
-![Code Example]() 
+![Code Example](./images/python_code.png) 
 
 typical presentation of code in README.md
 
@@ -26,7 +26,7 @@ def item_delete(request, pk):
 ```
 ### Links to supporting documents are in red within the paragraph text
 
-![Link Example]()
+![Link Example](./images/embed_link.png)
 
 ## Use this checklist as a quick reference for Django Build sequencial steps 
 
