@@ -29,7 +29,7 @@ def item_delete(request, pk):
 ![Link Example](./images/embed_link.png)
 
 ## Use this *checklist* as a quick reference for Django Build sequencial steps 
-(checkboxes are clickable for easy tracking of progress)
+(If you copy this checklist into the issues tab of your repo, the checkboxes are clickable for easy tracking of progress)
 
 ### Setup
 
