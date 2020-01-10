@@ -717,12 +717,14 @@ whitenoise==5.0.1</pre></code>
 <p> The last step is to push everything to Heroku which will officially deploy your application! (Make sure your
     application is up to date in your regular GitHub first.)</p>
         <code>$ git push heroku master</code>
-        <p>Now enter Heroku and view the application you just created by selecting it. Go to settings and select
-            'Reveal Config Vars' so you can add your secret key from the <code>settings.py</code> file under the
+
+        <p>Now navigate to your <a href="https://www.heroku.com">Heroku</a> account and view the application you just created by selecting
+            it. Go to
+            settings and select 'Reveal Config Vars' so you can add your secret key from the <code>settings.py</code> file under the
             database. </p>
         <img src="./images/secret_key.png" alt="display where to add the secret key to Heroku settings"/>
         <p>You will need to migrate the models to Heroku just like you did with the localhost, so run this code from
-        the terminal after pushing to heroku master:</p>
+        the terminal after pushing to heroku master and completing a successful build:</p>
         <code>$ heroku run python manage.py migrate</code>
         <p>Let's open the live version of the application. You can do this through your account on Heroku or by running
             this command in the terminal:</p>
