@@ -105,7 +105,8 @@
             <header class="heading">Database Setup</header>
         <p> Now that all the django files are in place, it is time to switch gears and set up the database. For this
         project, you will use PostgreSQL, which is a more robust relational database than the default SQLite. If you
-        need to install this locally, please follow <a href="https://www.postgresql.org/download/">this link</a> and
+        need to install this locally, please follow installation instructions for  <a
+                    href="https://www.postgresql.org/download/" target="_blank">PostgreSQL</a> and
         select the appropriate version for your home machine. Once the application is installed and running, return to
             the terminal and open a new tab. You do not need to cd into the project to set up this database, but you
         will need to make note of the values entered since they will need to be inputted into the settings of your
@@ -151,7 +152,7 @@ INSTALLED_APPS = [
             <code> $ python3 manage.py runserver </code>
             <img src="./images/django-confirm.png" alt="confirmation page with django rocket"/>
             <p> To see a list of commands simply type <code>python3 manage.py</code> or visit <a
-                    href="https://docs.djangoproject.com/en/2.1/ref/django-admin/">djangoproject.com</a> for
+                    href="https://docs.djangoproject.com/en/2.1/ref/django-admin/" target="_blank">djangoproject.com</a> for
                 full documentation on django-admin/manage.py.</p>
     </section>
     <section class="main-section" id="models">
@@ -184,8 +185,8 @@ class Item(models.Model):
         <p> In order to use this model, it must be migrated to the database. These two
             commands will not only
             configure the database information, but also store a record of the work inside the migrations directory
-            in your project. Visit <a href="https://docs.djangoproject.com/en/2.1/topics/migrations/">djangoproject
-                .com</a> for the full documentation on migrations. Green <span style="color:green;">OK</span> will
+            in your project. Visit <a href="https://docs.djangoproject.com/en/2.1/topics/migrations/" target="_blank">
+                djangoproject.com</a> for the full documentation on migrations. Green <span style="color:green;">OK</span> will
             indicate everything worked. Now, you can have as many models and fields as you want, but I recommend
             keeping it simple since this is a relational database and too many relationships will quickly get
             challenging to manage! (You will need to quit the server before running the commands.)
@@ -211,7 +212,7 @@ from .models import Todo, Item
 admin.site.register(Todo)
 admin.site.register(Item)</pre></code>
 <p> Finally you can access your database! You will need to run <code> $ python3 manage.py runserver </code> in the
-    terminal first whenever accessing localhost, but once that is running, navigate to <a href="http://localhost:8000/admin ">
+    terminal first whenever accessing localhost, but once that is running, navigate to <a href="http://localhost:8000/admin" target="_blank">
     localhost</a> to login and view your app. So far these models can make todo lists and tasks that can be assigned to the lists. However, you will also notice that the
     tasks don't show up in the lists. Don't worry, that will come soon when you add the user views to the project.
     </p>
@@ -221,7 +222,7 @@ admin.site.register(Item)</pre></code>
         <img src="./images/django-admin-calendar.png" alt="sample todo with mini calendar"/>
         <p> On a side note, you might want to seed your database before doing any of this. If you have data already
             in place, you can visit
-            <a href="https://docs.djangoproject.com/en/2.1/howto/initial-data/">djangoproject.com</a> for the full
+            <a href="https://docs.djangoproject.com/en/2.1/howto/initial-data/" target="_blank">djangoproject.com</a> for the full
             documentation on seed data formats. Definitely take a few minutes to add a couple of entries in both the
             Items and the Todos so you have something to pull when building out the user interface.
         </p>
@@ -351,7 +352,7 @@ urlpatterns = [
     path('', include('honeyDo_app.urls')),
 ]</pre></code>
 <p> Once again start up the server with <code> $ python3 manage.py runserver </code>, hope there aren't any
-    errors, and navigate to <a href="http://localhost:8000 ">localhost</a> to see your work. The home page should
+    errors, and navigate to <a href="http://localhost:8000" target="_blank">localhost</a> to see your work. The home page should
     look something like this:
 </p>
         <img src="./images/home_screen.png" alt="sample homescreen"/>
@@ -404,9 +405,10 @@ path('item/&ltint:pk>', views.item_detail, name= 'item_detail'),</pre></code>
 
 {% endblock %}</pre></code>
         <p> In order to see what you just did, you have to manually add '/items' after navigating to your <a
-                href="http://localhost:8000/">localhost</a>. Having a link to each item only to display the name of
+                href="http://localhost:8000/" target="_blank">localhost</a>. Having a link to each item only to display the name of
             the task isn't terribly useful, for this application, but when there are more fields tied to the foreign key this step is essential. Have a look
-            at another Django application, <a href="https://lessonkeeper.herokuapp.com/">lessonKeeper</a>, I created for a more complicated example of this .</p>
+            at another Django application, <a href="https://lessonkeeper.herokuapp.com/" target="_blank">lessonKeeper</a>, I created
+            for a more complicated example of this .</p>
     <p> All this work still doesn't link the todo and items, but the framework is there so you can now access the
         Item model. Return to the <code>todo_detail.html</code> file and enter this new loop after the second 'h4'
         tag: </p>
@@ -457,7 +459,7 @@ class ItemForm(forms.ModelForm):
         <p>Let's break down what just happened. The python code we added in <code>forms.py</code> will automatically
             generate this form for us! All you need to have is the type of method used: POST, and Django does the
             rest. This form is created as paragraphs, but if you would like more flexibility, there is much more
-            information on <a href="https://docs.djangoproject.com/en/3.0/ref/forms/fields/">djangoproject.com</a>
+            information on <a href="https://docs.djangoproject.com/en/3.0/ref/forms/fields/" target="_blank">djangoproject.com</a>
             about how to change the data fields. My favorite piece about the django forms is the built in use of
             'csrf_token' that lends some security to the form without any extra effort on your part. </p>
         <p> Before you can see this new form in the browser, you need a bit more code. Return to the <code>views
@@ -484,10 +486,10 @@ def todo_create(request):
                 views.todo_create, name = 'todo_create'),</code> on line 9.</p>
         <img src="./images/todo_form.png" alt="todo form example"/>
         <p>That last piece should allow you to return to the browser and view your <a
-                href="http://localhost:8000/todo/new">New Todo</a> form. Notice again the missing tasks from the
+                href="http://localhost:8000/todo/new" target="_blank">New Todo</a> form. Notice again the missing tasks from the
             form above. To add them, repeat the process of adding the <code>item_form.html</code> file, making a create for the Item
             model in <code>views.py</code>, and adding <code>path('item/new', views.item_create, name = 'item_create'),</code> to the <code>urls.py</code> file in the application
-        directory. Remember <a href="http://localhost:8000">localhost</a> will need to have '/item/new' added
+        directory. Remember <a href="http://localhost:8000" target="_blank">localhost</a> will need to have '/item/new' added
             manually to view this form. </p>
         <img src="./images/task_form.png" alt="task form example"/>
         <p>Notice the drop down menu that is automatically added to this form? That is the foreign key
@@ -500,7 +502,8 @@ def todo_create(request):
         <p>In some cases it may be helpful to convert the data into json pieces to make it easier for front end
             technologies to 'talk' to the backend parts. A serializer also allows data to be validated and works with
             the form data you just entered to do that. None of this is necessary for this application, but visit
-            <a href="https://www.django-rest-framework.org/api-guide/serializers/">Django REST Framework </a> to see the documentation.</p>
+            <a href="https://www.django-rest-framework.org/api-guide/serializers/" target="_blank">Django REST Framework </a> to see
+            the documentation.</p>
     </section>
     <section class="main-section" id="update_delete">
         <header class="heading">Update and Delete</header>
@@ -526,7 +529,8 @@ def todo_update(request, pk):
             are going to enter a combination of the pk code and the word 'update' by entering
             <code>path('todo/&ltint:pk>/update', views.todo_update, name = 'todo_update'),</code> under the list of
             current paths. These additions should allow you to navigate to <a
-                    href="http://localhost:8000/todo/1/update">localhost</a> and view the update form. Notice the page looks identical to the 'new' todo page. The only difference is  this form has the
+                    href="http://localhost:8000/todo/1/update" target="_blank">localhost</a> and view the update form. Notice the
+            page looks identical to the 'new' todo page. The only difference is  this form has the
             information already entered. To update, simply change the text and hit submit. Unfortunately, the tasks
             are still missing. Return to the <code>views.py</code> file and enter the update item method:</p>
         <code><pre>
@@ -543,7 +547,8 @@ def item_update(request, pk):
     <p>Then add the item update path to the application <code>urls.py</code> file, again creating the path at the
         end of the list.</p>
         <code>path('item/&ltint:pk>/update', views.item_update, name = 'item_update'),</code>
-        <p>Visit <a>localhost</a> to see this form at work. Again, this isn't super user friendly, so for the
+        <p>Visit <a href="http://localhost:8000/item/1/update" target="_blank">localhost</a> to see this form at work.
+            Again, this isn't super user friendly, so for the
             purpose of this particular project, we are going to make a few small changes. Start with the
             <code>views.py</code> file. We are going to change the redirect for the Item create and Item update to the
             todo_detail.</p>
@@ -613,7 +618,8 @@ def item_delete(request, pk):
         {% endfor %}
     &lt/ul>
         </pre></code>
-        <p> Now when you navigate to a Todo list from your <a href="http://localhost:8000/todo/1">localhost</a>, notice how the
+        <p> Now when you navigate to a Todo list from your <a href="http://localhost:8000/todo/1" target="_blank">localhost</a>,
+            notice how the
             delete button includes the name of the task to avoid user confusion.</p>
         <img src="./images/tasks_delete.png" alt="tasks with delete button included"/>
         <p>The last piece is to enable an entire Todo to be deleted. Remember back in the <a href="#models">Models</a>
@@ -653,10 +659,11 @@ STATICFILES_DIRS = (
   os.path.join(BASE_DIR, 'honeyDo_app/static'),
 )</pre></code>
         <p>Now those 'Tasks for Today' should be in bright red and you know the stylesheet is linked. Feel free to
-            add classes and customize to your heart's content. I've included this <a
-                    href="https://github.com/spianoDev/honeyDo-django/blob/master/honeyDo_app/static/style.css" target="_blank">
-                link</a> to my finished
-        stylesheet if you want to copy it! </p>
+            add classes and customize to your heart's content. I've included this link to my finished
+            <a href="https://github.com/spianoDev/honeyDo-django/blob/master/honeyDo_app/static/style.css"
+               target="_blank">
+                stylesheet</a> if you want to copy it! (The background was made by my daughter so you will need to
+            fill that piece with something else.) </p>
         <img src="./images/red_task.png" alt="heading now in red"/>
     </section>
     <section class="main-section" id="deploy">
@@ -719,7 +726,8 @@ whitenoise==5.0.1</pre></code>
     application is up to date in your regular GitHub first.)</p>
         <code>$ git push heroku master</code>
 
-        <p>Now navigate to your <a href="https://www.heroku.com">Heroku</a> account and view the application you just created by selecting
+        <p>Now navigate to your <a href="https://www.heroku.com" target="_blank">Heroku</a> account and view the application you
+            just created by selecting
             it. Go to
             settings and select 'Reveal Config Vars' so you can add your secret key from the <code>settings.py</code> file under the
             database. </p>
@@ -736,6 +744,8 @@ whitenoise==5.0.1</pre></code>
         <p>Please visit the deployed application on Heroku
             <a href="https://honeydo-app.herokuapp.com/" target="_blank" >honeyDo-django</a> and feel free to submit comments or improvements via an issue in the
             <a href="https://github.com/spianoDev/honeyDo-django" target="_blank"> honeyDo-django GitHub</a> Repo.
+            For more tutorials and applications, please check out my website <a href="https://spiano.dev"
+                                                                                target="_blank">spiano.dev</a>. 
         </p>
     </section>
 
